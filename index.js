@@ -53,6 +53,10 @@ loginBtn.addEventListener("click", async () => {
     try {
         await signInWithEmailAndPassword(auth, email, password);
         alert("Login successful!");
+
+        
+        window.location.href = "homepage.html";
+
     } catch (err) {
         alert(err.message);
     }
