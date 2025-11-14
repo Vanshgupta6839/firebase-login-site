@@ -1,6 +1,3 @@
-// ------------------------------------------
-// 🔥 FIREBASE IMPORTS (CDN)
-// ------------------------------------------
 import { initializeApp } 
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 
@@ -14,17 +11,7 @@ import {
 } 
 from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
-import {
-    getFirestore,
-    doc,
-    setDoc
-} 
-from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-
-// ------------------------------------------
-// 🔥 YOUR FIREBASE CONFIG (PASTE YOURS)
-// ------------------------------------------
 const firebaseConfig = {
     apiKey: "AIzaSyBYhJAl9-6C2cZP4PHXkAznYS4L6n42ND0",
     authDomain: "contact-from-users.firebaseapp.com",
@@ -36,95 +23,94 @@ const firebaseConfig = {
     measurementId: "G-T9KDGXK2MJ"
 };
 
-
-// ------------------------------------------
-// 🔥 INITIALIZE
-// ------------------------------------------
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
 
-// ------------------------------------------
-// 🔥 DOM ELEMENTS
-// ------------------------------------------
-const email = document.getElementById("email");
-const password = document.getElementById("password");
+// INPUTS
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+
+// BUTTONS
 const loginBtn = document.getElementById("loginBtn");
 const googleBtn = document.getElementById("googleBtn");
 const signupBtn = document.getElementById("signupBtn");
 const forgotBtn = document.getElementById("forgotBtn");
 
 
-// ------------------------------------------
-// 🔥 LOGIN
-// ------------------------------------------
+// --------------------------------------------
+// LOGIN
+// --------------------------------------------
 loginBtn.addEventListener("click", async () => {
-    try {
-        await signInWithEmailAndPassword(auth, email.value, password.value);
-        alert("Login successful!");
-        window.location.href = "homepage.html";
-    } catch (err) {
-        alert("Error: " + err.message);
-    }
-});
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
 
-
-// ------------------------------------------
-// 🔥 GOOGLE LOGIN
-// ------------------------------------------
-googleBtn.addEventListener("click", async () => {
-    try {
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
-        alert("Google Login Successful!");
-        window.location.href = "homepage.html";
-    } catch (err) {
-        alert("Error: " + err.message);
-    }
-});
-
-
-// ------------------------------------------
-// 🔥 SIGN UP
-// ------------------------------------------
-signupBtn.addEventListener("click", async () => {
-    try {
-        const user = await createUserWithEmailAndPassword(
-            auth,
-            email.value,
-            password.value
-        );
-
-        // Save user to Firestore
-        await setDoc(doc(db, "users", user.user.uid), {
-            email: email.value,
-            createdAt: new Date()
-        });
-
-        alert("Sign Up Successful!");
-        window.location.href = "homepage.html";
-    } catch (err) {
-        alert("Error: " + err.message);
-    }
-});
-
-
-// ------------------------------------------
-// 🔥 PASSWORD RESET
-// ------------------------------------------
-forgotBtn.addEventListener("click", async () => {
-    const userEmail = prompt("Enter your registered email:");
-
-    if (!userEmail) {
-        alert("Enter a valid email!");
+    if (!email || !password) {
+        alert("Enter email & password");
         return;
     }
 
     try {
-        await sendPasswordResetEmail(auth, userEmail);
-        alert("Password reset email sent!");
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("Login successful!");
+    } catch (err) {
+        alert(err.message);
+    }
+});
+
+
+
+signupBtn.addEventListener("click", async () => {
+    const email = prompt("Enter your email for Signup:");
+    const password = prompt("Enter your password (min 6 chars):");
+
+    if (!email || !password) {
+        alert("Please enter valid details.");
+        return;
+    }
+
+    try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert("Signup successful!");
     } catch (err) {
         alert("Error: " + err.message);
+    }
+});
+
+
+// --------------------------------------------
+// GOOGLE LOGIN
+// --------------------------------------------
+googleBtn.addEventListener("click", async () => {
+    try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+        alert("Google login success!");
+    } catch (err) {
+        alert(err.message);
+    }
+});
+
+
+// --------------------------------------------
+// PASSWORD RESET (FULL WORKING VERSION)
+// const --------------------------------------------
+forgotBtn.addEventListener("click", async () => {
+    const emailVal = email.value.trim();
+
+    if (!emailVal) {
+        alert("Please type your email in the email box first.");
+        return;
+    }
+
+    try {
+        await sendPasswordResetEmail(auth, emailVal, {
+            url: "https://vanshgupta6839.github.io/firebase-login-site/",
+            handleCodeInApp: false
+        });
+
+        alert("Password reset email sent! Check your inbox.");
+    } catch (error) {
+        alert("Error: " + error.message);
     }
 });
