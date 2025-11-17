@@ -1,61 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Homepage</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
 
     <style>
         body {
+            background: linear-gradient(135deg, #66ccff, #0066ff);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial;
+            color: white;
+        }
+        .box {
+            background: rgba(255,255,255,0.2);
             padding: 30px;
-            background: linear-gradient(to right, #e2e2e2, #c9d6ff);
-        }
-        h1 {
+            border-radius: 15px;
             text-align: center;
-        }
-        button {
-            color: blueviolet;
-            background-color: #c9d6ff;
-            padding: 5px;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: bold;
-            border: none;
-        }
-        button:hover {
-            text-decoration: underline;
-            color: blue;
-        }
-        button,
-        div {
-            margin-left: 15%;
-            font-size: 20px;
-            padding: 10px;
-        }
-        div {
-            font-weight: 400;
-            color: rgb(12, 11, 11);
-        }
-        span {
-            font-weight: 600;
-            font-size: 22px;
-            color: black;
+            backdrop-filter: blur(10px);
         }
     </style>
-
-    <!-- IMPORTANT: TypeScript compile hone ke baad "homepage.js" generate hota hai -->
-    <script type="module" src="./dist/homepage.js"></script>
 </head>
-
 <body>
-    <h1>yehh you aree logged in 🥳🥳</h1>
-    <h1>Welcome to the Homepage</h1>
-    <h2>It is a basic home menu page for demo</h2>
-
-    <div>First Name: <span id="loggedUserFName"></span></div>
-    <div>Last Name: <span id="loggedUserLName"></span></div>
-    <div>Email: <span id="loggedUserEmail"></span></div>
-
-    <button id="logout">Logout</button>
+    <div class="box">
+        <h1>Welcome User 🎉</h1>
+        <p>You have successfully logged in.</p>
+    </div>
 </body>
 </html>

@@ -1,120 +1,72 @@
-import { initializeApp } 
-    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+// CREATE CLIENT
+const supabase = supabase.createClient(
+    "YOUR_SUPABASE_URL",
+    "YOUR_SUPABASE_ANON_KEY"
+);
 
-import { 
-    getAuth,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    GoogleAuthProvider,
-    signInWithPopup,
-    sendPasswordResetEmail
-} 
-from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-
-
-const firebaseConfig = {
-    apiKey: "AIzaSyBYhJAl9-6C2cZP4PHXkAznYS4L6n42ND0",
-    authDomain: "contact-from-users.firebaseapp.com",
-    databaseURL: "https://contact-from-users-default-rtdb.firebaseio.com",
-    projectId: "contact-from-users",
-    storageBucket: "contact-from-users.firebasestorage.app",
-    messagingSenderId: "864210653346",
-    appId: "1:864210653346:web:41cc5648c3d9d8595ec7fb",
-    measurementId: "G-T9KDGXK2MJ"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-
-// INPUTS
+// ELEMENTS
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 
-// BUTTONS
+
 const loginBtn = document.getElementById("loginBtn");
-const googleBtn = document.getElementById("googleBtn");
 const signupBtn = document.getElementById("signupBtn");
+const googleBtn = document.getElementById("googleBtn");
+
 const forgotBtn = document.getElementById("forgotBtn");
 
 
-// --------------------------------------------
+
 // LOGIN
-// --------------------------------------------
+
 loginBtn.addEventListener("click", async () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
+    let { data, error } = await supabase.auth.signInWithPassword({
+        email: emailInput.value,
+        password: passwordInput.value,
+    });
 
-    if (!email || !password) {
-        alert("Enter email & password");
-        return;
-    }
+    if (error) return alert("Login Failed: " + error.message);
 
-    try {
-        await signInWithEmailAndPassword(auth, email, password);
-        alert("Login successful!");
-
-        
-        window.location.href = "homepage.html";
-
-    } catch (err) {
-        alert(err.message);
-    }
+    alert("Login Successful!");
+    window.location.href = "homepage.html";
 });
 
 
-
+// SIGNUP
 signupBtn.addEventListener("click", async () => {
-    const email = prompt("Enter your email for Signup:");
-    const password = prompt("Enter your password (min 6 chars):");
+    let { data, error } = await supabase.auth.signUp({
+        email: emailInput.value,
+        password: passwordInput.value,
+    });
 
-    if (!email || !password) {
-        alert("Please enter valid details.");
-        return;
-    }
+    if (error) return alert("Signup Failed: " + error.message);
 
-    try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        alert("Signup successful!");
-    } catch (err) {
-        alert("Error: " + err.message);
-    }
+    alert("Signup Successful! Check your email for verification.");
 });
 
 
-// --------------------------------------------
 // GOOGLE LOGIN
-// --------------------------------------------
+
 googleBtn.addEventListener("click", async () => {
-    try {
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
-        alert("Google login success!");
-    } catch (err) {
-        alert(err.message);
-    }
+    let { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+    });
+
+    if (error) return alert("Google Login Failed: " + error.message);
+
+    // Automatically redirects
 });
 
 
-// --------------------------------------------
-// PASSWORD RESET (FULL WORKING VERSION)
-// const --------------------------------------------
+// RESET PASSWORD
 forgotBtn.addEventListener("click", async () => {
-    const emailVal = email.value.trim();
+    const email = emailInput.value;
 
-    if (!emailVal) {
-        alert("Please type your email in the email box first.");
-        return;
-    }
+    let { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: "https://vanshgupta6839.github.io/firebase-login-site/reset.html",
+    });
 
-    try {
-        await sendPasswordResetEmail(auth, emailVal, {
-            url: "https://vanshgupta6839.github.io/firebase-login-site/",
-            handleCodeInApp: false
-        });
+    if (error) return alert("Error: " + error.message);
 
-        alert("Password reset email sent! Check your inbox.");
-    } catch (error) {
-        alert("Error: " + error.message);
-    }
+    alert("Reset link sent! Check your email.");
 });
