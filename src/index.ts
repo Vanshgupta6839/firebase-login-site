@@ -1,4 +1,4 @@
-import { auth, db } from "./firebase/firebaseConfig";
+import { auth, db } from "./Supabase/firebaseConfig";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,

@@ -1,33 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-
-    <style>
-        body {
-            background: linear-gradient(135deg, #66ccff, #0066ff);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial;
-            color: white;
-        }
-        .box {
-            background: rgba(255,255,255,0.2);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-    </style>
+  <title>Home</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="box">
-        <h1>Welcome User 🎉</h1>
-        <p>You have successfully logged in.</p>
-    </div>
+
+<h1>🎉 Welcome User</h1>
+<p>You are logged in.</p>
+
+<button id="logoutBtn">Logout</button>
+
+<script type="module" src="./homepage.js"></script>
 </body>
 </html>

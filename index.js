@@ -1,72 +1,93 @@
-// CREATE CLIENT
-const supabase = supabase.createClient(
-    "YOUR_SUPABASE_URL",
-    "YOUR_SUPABASE_ANON_KEY"
-);
+// ---------------------------------------------------
+// 🔥 SUPABASE IMPORT
+// ---------------------------------------------------
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// ELEMENTS
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
+// ---------------------------------------------------
+// 🔥 SUPABASE CONFIG
+// ---------------------------------------------------
+const supabaseUrl = "https://dfrjavvcaeuadoplkbom.supabase.co";
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmcmphdnZjYWV1YWRvcGxrYm9tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzNzI0NTQsImV4cCI6MjA3ODk0ODQ1NH0.TQV9ix14TMQ7vrxLz-bdBKGc5KJKkEDl5roxVr_-F5U";
 
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// ---------------------------------------------------
+// 🔥 DOM ELEMENTS
+// ---------------------------------------------------
+const email = document.getElementById("email");
+const password = document.getElementById("password");
 
 const loginBtn = document.getElementById("loginBtn");
-const signupBtn = document.getElementById("signupBtn");
 const googleBtn = document.getElementById("googleBtn");
-
+const signupBtn = document.getElementById("signupBtn");
 const forgotBtn = document.getElementById("forgotBtn");
 
-
-
-// LOGIN
-
+// ---------------------------------------------------
+// 🔥 LOGIN
+// ---------------------------------------------------
 loginBtn.addEventListener("click", async () => {
-    let { data, error } = await supabase.auth.signInWithPassword({
-        email: emailInput.value,
-        password: passwordInput.value,
-    });
+  if (!email.value || !password.value)
+    return alert("Please enter both email and password!");
 
-    if (error) return alert("Login Failed: " + error.message);
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+  });
 
-    alert("Login Successful!");
-    window.location.href = "homepage.html";
+  if (error) return alert("Error: " + error.message);
+
+  alert("Login Successful!");
+  window.location.href = "homepage.html";
 });
 
-
-// SIGNUP
+// ---------------------------------------------------
+// 🔥 SIGNUP (FIXED + PASSWORD VALIDATION)
+// ---------------------------------------------------
 signupBtn.addEventListener("click", async () => {
-    let { data, error } = await supabase.auth.signUp({
-        email: emailInput.value,
-        password: passwordInput.value,
-    });
+  if (!email.value || !password.value)
+    return alert("Please enter email & password!");
 
-    if (error) return alert("Signup Failed: " + error.message);
+  if (password.value.length < 6)
+    return alert("Password must be 6 characters minimum!");
 
-    alert("Signup Successful! Check your email for verification.");
+  const { error } = await supabase.auth.signUp({
+    email: email.value,
+    password: password.value,
+  });
+
+  if (error) return alert("Error: " + error.message);
+
+  alert("Signup successful! Check your email for verification.");
 });
 
-
-// GOOGLE LOGIN
-
+// ---------------------------------------------------
+// 🔥 GOOGLE LOGIN (FIXED REDIRECT)
+// ---------------------------------------------------
 googleBtn.addEventListener("click", async () => {
-    let { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-    });
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: "http://localhost:5500/homepage.html",
+    },
+  });
 
-    if (error) return alert("Google Login Failed: " + error.message);
-
-    // Automatically redirects
+  if (error) alert("Error: " + error.message);
 });
 
-
-// RESET PASSWORD
+// ---------------------------------------------------
+// 🔥 PASSWORD RESET
+// ---------------------------------------------------
 forgotBtn.addEventListener("click", async () => {
-    const email = emailInput.value;
+  const userEmail = prompt("Enter your registered email:");
 
-    let { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: "https://vanshgupta6839.github.io/firebase-login-site/reset.html",
-    });
+  if (!userEmail) return alert("Email required!");
 
-    if (error) return alert("Error: " + error.message);
+  const { error } = await supabase.auth.resetPasswordForEmail(userEmail, {
+    redirectTo: "http://localhost:5500/reset.html",
+  });
 
-    alert("Reset link sent! Check your email.");
+  if (error) return alert("Error: " + error.message);
+
+  alert("Password reset email sent!");
 });
